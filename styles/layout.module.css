@@ -1,0 +1,50 @@
+/* components/layout.module.css */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  border-color: #ffffff;
+  background-color: #020624;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+/* components/layout.module.css */
+
+.backToHome {
+  margin: 3rem 0 0;
+  text-align: center;
+}
+
+.backToHome a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 2px solid white;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: rgba(0, 112, 243, 0.2);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.backToHome a:hover {
+  background-color: rgba(0, 112, 243, 0.4);
+  color: white;
+  text-decoration: none;
+}
