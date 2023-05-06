@@ -1,5 +1,3 @@
-//* summarize form component
-
 import { useState, useEffect } from "react";
 import styles from "../styles/summarize-form.module.css";
 
@@ -9,7 +7,7 @@ export function SummarizeForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Updated summary:", summary); // Debugging statement
+    console.log("Updated summary:", summary);
   }, [summary]);
 
   const handleSubmit = async (e) => {
@@ -24,19 +22,21 @@ export function SummarizeForm() {
 
       if (response.headers.get("Content-Type") === "application/json") {
         const data = await response.json();
-        console.log("Received JSON data:", data); // Debugging statement
+        console.log("Received JSON data:", data);
 
         if (response.ok) {
           setSummary(data.summary);
         } else {
           console.error("Error:", data.error);
         }
+      } else if (response.status === 504) {
+        console.error("Serverless function timed out. Please try again later.");
       } else {
         const textData = await response.text();
         console.error("Invalid content type, expected JSON but received:", textData);
       }
     } catch (error) {
-      console.error(error); // Debugging statement
+      console.error(error);
     } finally {
       setLoading(false);
     }

@@ -8,7 +8,13 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
       const text = req.body.text;
-      const model = new OpenAI({openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0});
+
+      if (!text) {
+        res.status(400).json({ error: "Text is required" });
+        return;
+      }
+
+      const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0 });
       const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
       const docs = await textSplitter.createDocuments([text]);
 
@@ -17,14 +23,12 @@ export default async function handler(req, res) {
         input_documents: docs,
       });
 
-      res.setHeader("Content-Type", "application/json"); // Ensure the Content-Type is set correctly
       res.status(200).json({ summary: response.text });
     } catch (error) {
-      res.setHeader("Content-Type", "application/json"); // Ensure the Content-Type is set correctly
+      console.error("Error in API route:", error);
       res.status(500).json({ error: error.message });
     }
   } else {
-    res.setHeader("Content-Type", "application/json"); // Ensure the Content-Type is set correctly
     res.status(405).json({ error: "Invalid request method" });
   }
 }
