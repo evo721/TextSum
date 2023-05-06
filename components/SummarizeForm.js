@@ -1,3 +1,5 @@
+//* summarize form component
+
 import { useState, useEffect } from "react";
 import styles from "../styles/summarize-form.module.css";
 
@@ -19,13 +21,19 @@ export function SummarizeForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
-      const data = await response.json();
-      console.log("Received JSON data:", data); // Debugging statement
 
-      if (response.ok) {
-        setSummary(data.summary);
+      if (response.headers.get("Content-Type") === "application/json") {
+        const data = await response.json();
+        console.log("Received JSON data:", data); // Debugging statement
+
+        if (response.ok) {
+          setSummary(data.summary);
+        } else {
+          console.error("Error:", data.error);
+        }
       } else {
-        console.error("Error:", data.error);
+        const textData = await response.text();
+        console.error("Invalid content type, expected JSON but received:", textData);
       }
     } catch (error) {
       console.error(error); // Debugging statement
