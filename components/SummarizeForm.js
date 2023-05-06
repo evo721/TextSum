@@ -1,5 +1,4 @@
-// components/SummarizeForm.js
-import { useState, useEffect } from "react"; // Import useEffect
+import { useState, useEffect } from "react";
 import styles from "../styles/summarize-form.module.css";
 
 export function SummarizeForm() {
@@ -7,9 +6,8 @@ export function SummarizeForm() {
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Log the summary state every time it updates
   useEffect(() => {
-    console.log("Updated summary:", summary);
+    console.log("Updated summary:", summary); // Debugging statement
   }, [summary]);
 
   const handleSubmit = async (e) => {
@@ -22,10 +20,15 @@ export function SummarizeForm() {
         body: JSON.stringify({ text }),
       });
       const data = await response.json();
-      console.log("Response data:", data); // Debugging statement
-      setSummary(data.summary);
+      console.log("Received JSON data:", data); // Debugging statement
+
+      if (response.ok) {
+        setSummary(data.summary);
+      } else {
+        console.error("Error:", data.error);
+      }
     } catch (error) {
-      console.error(error);
+      console.error(error); // Debugging statement
     } finally {
       setLoading(false);
     }
