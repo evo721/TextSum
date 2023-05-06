@@ -5,6 +5,7 @@ export function SummarizeForm() {
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     console.log("Updated summary:", summary);
@@ -13,6 +14,7 @@ export function SummarizeForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       const response = await fetch("/api/summarize", {
         method: "POST",
@@ -20,23 +22,19 @@ export function SummarizeForm() {
         body: JSON.stringify({ text }),
       });
 
-      if (response.headers.get("Content-Type") === "application/json") {
+      if (response.ok) {
         const data = await response.json();
-        console.log("Received JSON data:", data);
-
-        if (response.ok) {
-          setSummary(data.summary);
-        } else {
-          console.error("Error:", data.error);
-        }
+        console.log("Response data:", data);
+        setSummary(data.summary);
       } else if (response.status === 504) {
-        console.error("Serverless function timed out. Please try again later.");
+        setError("Server timeout. Please try again later.");
       } else {
-        const textData = await response.text();
-        console.error("Invalid content type, expected JSON but received:", textData);
+        console.error("Invalid content type, expected JSON but received:", await response.text());
+        setError("An error occurred while processing your request. Please try again.");
       }
     } catch (error) {
       console.error(error);
+      setError("An error occurred while processing your request. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -61,6 +59,7 @@ export function SummarizeForm() {
       <h3>Summary:</h3>
       <div className={styles.summaryContainer}>
         {loading && <div className={styles.spinner}></div>}
+        {error && <p className={styles.error}>{error}</p>}
         <p key={Date.now()} className={styles.summary}>{summary}</p>
       </div>
     </div>
